@@ -8,7 +8,7 @@ from datetime import datetime
 
 class BaseModel:
     '''Base model class'''
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.id = str(uuid4())
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
