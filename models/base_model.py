@@ -8,10 +8,19 @@ from datetime import datetime
 
 class BaseModel:
     '''Base model class'''
-    def __init__(self):
-        self.id = str(uuid4())
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
+    def __init__(self, *args, **kwargs):
+        """this is a public class attribute"""
+        if kwargs:
+            for key, value in kwargs.items():
+                if key == "created_at" or key == "updated_at":
+                    value = datetime.strptime(value, %Y-%m-%dT%H:%M:%S.%f (ex: 2017-06-14T22:31:03.285259)
+                if key == "__class__":
+                    continue
+        else:
+            self.id = str(uuid4())
+            self.created_at = datetime.now()
+            self.updated_at = datetime.now()
+
 
     def __str__(self):
         return f"[{self.__class__.__name__}] ({self.id}) ({self.__dict__})"
