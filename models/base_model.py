@@ -9,6 +9,11 @@ from datetime import datetime
 class BaseModel:
     '''Base model class'''
     def __init__(self, *args, **kwargs):
+<<<<<<< HEAD
+        self.id = str(uuid4())
+        self.created_at = datetime.now()
+        self.updated_at = datetime.now()
+=======
         """this is a public class attribute"""
         if kwargs:
             for key, value in kwargs.items():
@@ -23,6 +28,7 @@ class BaseModel:
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
 
+>>>>>>> 563bcac19cfaed3b56dc329fc2c1f8240ed494e1
 
     def __str__(self):
         return f"[{self.__class__.__name__}] ({self.id}) ({self.__dict__})"
