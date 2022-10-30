@@ -1,45 +1,69 @@
 #!/usr/bin/python3
-"""File Storage"""
+"""
+This module containsa class FileStorage
+"""
 
 import json
-import uuid
-import os
-from datetime import datetime
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
+
+classes = {
+    "BaseModel": BaseModel,
+    "User": User,
+    "State": State,
+    "City": City,
+    "Amenity": Amenity,
+    "Place": Place,
+    "Review": Review,
+}
 
 
-class FileStorage():
+class FileStorage:
+    """
+    Implementation of the class
+    """
     __file_path = "file.json"
     __objects = {}
 
     def all(self):
-        '''returns the dictionary __objects'''
-        return (FileStorage.__objects)
+        """
+        Returns the dictionary __objects
+        """
+        return self.__objects
 
     def new(self, obj):
-        '''sets in __objects the obj with key <obj class name>.id'''
-        FileStorage.__objects[obj.__class__.__name__ + "." + str(obj.id)] = obj
-        #key = f"{obj.__class__.__name__}.{obj.id}"
-        #FileStorage.__objects[key] = obj
-        #__objects[key] = obj
+        """
+        Sets in __objects the obj with key <obj class name>.id
+        """
+        if not obj:
+            return
+        key = obj.__class__.__name__ + "." + obj.id
+        self.__objects[key] = obj
+
+    def save(self):
+        """
+        Serializes __objects to the JSON file (path: __file_path)
+        """
+        json_obj = {}
+        for key in self.__objects:
+            json_obj[key] = self.__objects[key].to_dict()
+        with open(self.__file_path, 'w') as f:
+            json.dump(json_obj, f)
 
     def reload(self):
-        '''deserializes the JSON file to __objects (only if the JSON file
-        (__file_path) exists ; otherwise, do nothing. If the file doesn’t exist,
-         no exception should be raised)'''
-        if (os.path.isfile(FileStorage.__file_path)):
-            with open(FileStorage.__file_path, 'r', encoding="utf-8") as fname:
-                l_json = json.load(fname)
-                for key, val in l_json.items():
-                    FileStorage.__objects[key] = eval(
-                        val['__class__'])(**val)
-    
-    def save(self):
-        '''method of storage
-        __init__(self, *args, **kwargs):
-        if it’s a new instance (not from a dictionary representation),
-         add a call to the method new(self) on storage'''
-        with open(FileStorage.__file_path, 'w', encoding='utf-8') as fname:
-            new_dict = {key: obj.to_dict() for key, obj in
-                        FileStorage.__objects.items()}
-            json.dump(new_dict, fname)
+        """
+        Deserializes the JSON file to __objects (only if the JSON
+        file (__file_path) exists
+        """
+        try:
+            with open(self.__file_path, 'r') as f:
+                j_obj = json.load(f)
+            for k in j_obj:
+                self.__objects[k] = classes[j_obj[k]["__class__"]](**j_obj[k])
+        except Exception:
+            pass
