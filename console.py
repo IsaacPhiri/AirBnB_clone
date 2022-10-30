@@ -17,5 +17,6 @@ class Console(cmd.Cmd):
         """Ctrl+D \ ^D"""
         return True
 
+
 if __name__ == '__main__':
     Console().cmdloop()
